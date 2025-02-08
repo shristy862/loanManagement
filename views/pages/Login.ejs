@@ -1,0 +1,17 @@
+<link rel="stylesheet" href="./css/style.css" type="text/css" media="all">
+    <%- include('../partials/header') %>
+    <div class="main">
+        <div class="form-container">
+            <form action="/loginSuccess" method="POST" >
+                <br>
+                
+                <label for="email">Email:</label>
+                <input type="text" name="email" id="email"><br><br>
+
+                <label for="password">Password</label>
+                <input type="text" name="password" id="password"><br><br>
+
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>

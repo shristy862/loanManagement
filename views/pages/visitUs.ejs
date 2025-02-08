@@ -1,0 +1,233 @@
+<link rel="stylesheet" href="./css/style.css" type="text/css" media="all">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<%- include('../partials/header2') %>
+
+    <div class="main">
+        <div class="customerData">
+            <h1>Customers Added By You</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Contact</th>
+                        <th>Email</th>
+                        <th>City</th>
+                        <th>Unique Id</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% customers.forEach(customer=> { %>
+                        <tr
+                            onclick="fillModal('<%= customer.name %>', '<%= customer.contact %>', '<%= customer.email %>', '<%= customer.city %>', '<%= customer.id %>')">
+                            <td>
+                                <%= customer.name %>
+                            </td>
+                            <td>
+                                <%= customer.contact %>
+                            </td>
+                            <td>
+                                <%= customer.email %>
+                            </td>
+                            <td>
+                                <%= customer.city %>
+                            </td>
+                            <td>
+                                <%= customer.id %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="loan-Container">
+            <h1>Loan Application Form</h1>
+            <br>
+            <label for="accountType">Account Type</label>
+            <label class="radioLabel">
+                <input type="radio" name="accountType" id="accountType" value="admin" onclick="toggleFields('admin')">
+                Admin
+            </label>
+            <label class="radioLabel">
+                <input type="radio" name="accountType" id="accountType" value="business"
+                    onclick="toggleFields('business')">
+                Business
+            </label>
+
+            <div id="businessFields" style="display: none;">
+                <label for="businessName">Business Name:</label>
+                <input type="text" name="businessName" id="businessName">
+                <label for="previousLoan">Previous Loan:</label>
+                <input type="text" name="previousLoan" id="previousLoan">
+            </div>
+
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name"><br><br>
+
+            <label for="contact">Contact No:</label>
+            <input type="text" name="contact" id="contact"><br><br>
+
+            <label for="email">Email:</label>
+            <input type="text" name="email" id="email"><br><br>
+
+            <label for="city">City:</label>
+            <input type="text" name="city" id="city"><br><br>
+
+            <label for="customerId">C_ID</label>
+            <input type="text" name="customerId" id="customerId"><br><br>
+
+            <label for="loanAmount">Loan Amount:</label>
+            <input type="text" name="loanAmount" id="loanAmount"><br><br>
+
+            <label for="loanDate">Loan Start Date:</label>
+            <input type="date" name="loanDate" id="loanDate"><br><br>
+
+            <div id="paymentOptions">
+                <label for="paymentType">Payment Type:</label>
+                <select name="paymentType" id="paymentType" onchange="toggleEMIFields()">
+                    <option value="fullPayment">Full Payment</option>
+                    <option value="emi">EMI</option>
+                </select>
+            </div>
+
+            <div id="emiFields" style="display: none;">
+                <label for="interestRate">Interest Rate (%):</label>
+                <input type="text" name="interestRate" id="interestRate">
+
+                <label for="emiDuration">EMI Duration (months):</label>
+                <select name="emiDuration" id="emiDuration">
+                    <option value="3">3</option>
+                    <option value="6">6</option>
+                    <option value="9">9</option>
+                    <option value="12">12</option>
+                </select>
+                <input type="button" value="Calculate EMI" onclick="calculateEMI()">
+
+            </div>
+            <input type="button" value="Submit Form" onclick="formData()">
+            <div id="emiCalculationInfo" style="display: none;">
+                <!-- <label>EMI to be paid: <span id="emi"></span></label><br>
+                <label>EMI Duration (months): <span id="emiDurationPrint"></span></label><br>
+                <label>Loan Start Date: <span id="loanStartDate"></span></label><br> -->
+                <label>Total amount with interest: <span id="totalAmountWithInterest"></span></label><br>
+                <!-- <label>Due Dates:</label> -->
+                <div class="dueDates">
+                    <input type="text" id="dueDates" >
+                    <input type="text" id="emiDurationPrint" >
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+
+        function formData() {
+            // alert("hello")
+            let at = $("#accountType").val();
+            let n = $("#name").val();
+            let con = $("#contact").val();
+            let e = $("#email").val();
+            let c = $("#city").val();
+            let cid = $("#customerId").val();
+            let lm = $("#loanAmount").val();
+            let ld = $("#loanDate").val();
+            let bn = $("#businessName").val();
+            let p = $("#previousLoan").val();
+            let pt = $("#paymentType").val()
+            let i = $("#interestRate").val();
+            let d = $("#emiDuration").val();
+            let tm = $("#totalAmountWithInterest").text();
+            let dd = $("#dueDates").val();
+            $.ajax({
+                url: '/successLoanForm',
+                method: 'POST',
+                data: {
+                    "accountType": at,
+                    "name": n,
+                    "contact": con,
+                    "email": e,
+                    "city": c,
+                    "customerId": cid,
+                    "loanAmount": lm,
+                    "loanDate": ld,
+                    "accountType": at,
+                    "businessName": bn,
+                    "previousLoan": p,
+                    "paymentType": pt,
+                    "interestRate": i,
+                    "emiDurationPrint": d,
+                    "totalAmountWithInterest": tm,
+                    "dueDates": dd
+                },
+                success: function () {
+                    alert('Form data send to server');
+                    window.location.href = `/bill?id=${cid}`;
+                },
+                error: function (error) {
+                    alert('Error occured while sending data');
+                    console.log(error);
+                }
+            });
+        };
+
+        function toggleFields(accountType) {
+            if (accountType === 'business') {
+                document.getElementById('businessFields').style.display = 'block';
+            } else {
+                document.getElementById('businessFields').style.display = 'none';
+            }
+        }
+
+        function toggleEMIFields() {
+            var paymentType = document.getElementById('paymentType').value;
+            if (paymentType === 'emi') {
+                document.getElementById('emiFields').style.display = 'block';
+            } else {
+                document.getElementById('emiFields').style.display = 'none';
+            }
+        }
+
+        function fillModal(name, contact, email, city, id) {
+            document.getElementById('name').value = name;
+            document.getElementById('contact').value = contact;
+            document.getElementById('email').value = email;
+            document.getElementById('city').value = city;
+            document.getElementById('customerId').value = id;
+        }
+
+        function calculateEMI() {
+            var loanAmount = parseFloat(document.getElementById('loanAmount').value);
+            var interestRate = parseFloat(document.getElementById('interestRate').value);
+            var emiDuration = parseInt(document.getElementById('emiDuration').value);
+
+            // Calculate interest rate
+            var monthlyInterestRate = interestRate / 100 / 12;
+
+            // Calculate EMI 
+            var emi = loanAmount * monthlyInterestRate / (1 - Math.pow(1 + monthlyInterestRate, -emiDuration));
+
+            // Calculate total amount 
+            var totalAmountWithInterest = emi * emiDuration;
+
+            // caluculate due dates
+            var currentDate = new Date();
+            var dueDates = [];
+            for (var i = 0; i < emiDuration; i++) {
+                var dueDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, currentDate.getDate());
+                dueDates.push(dueDate.toDateString());
+            }
+            console.log("DATA = "+dueDate);
+            // fill the <span> elements
+            // document.getElementById('emi').innerText = emi.toFixed(2) + ' per month';
+            document.getElementById('emiDurationPrint').value = emiDuration;
+            // document.getElementById('loanStartDate').innerText = new Date().toDateString();
+            document.getElementById('totalAmountWithInterest').innerText = totalAmountWithInterest.toFixed(2);
+            document.getElementById('dueDates').value = dueDates;
+            // show emi
+            document.getElementById('emiCalculationInfo').style.display = 'block';
+        }
+
+    </script>

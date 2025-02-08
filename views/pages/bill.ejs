@@ -1,0 +1,33 @@
+<link rel="stylesheet" href="./css/style.css" type="text/css" media="all">
+<%- include('../partials/header2') %>
+    <body>
+        <div class="main">
+            <div class="bill-container">
+                <h2>Bill Details</h2>
+                <h2>Customer ID: <%= customerId %>
+                </h2>
+
+                <% if (formData.length > 0) { %>
+                    <h3>Customer's details</h3>
+                    <hr>
+                    <ul>
+                      <% formData.forEach(data => { %>
+                        <li>Name: <%= data.name %></li>
+                        <li>Contact: <%= data.contact %></li>
+                        <li>Email: <%= data.email %></li>
+                        <li>Payment Mode: <%= data.paymentType %></li>
+                        <li>Loan Date: <%= data.loanDate%></li>
+                        <li>Loan Amount: <%= data.loanAmount%> </li>
+                        <li>Interest Rate: <%= data.interestRate %>%</li>
+                        <li>Total Payable Amount: <%= data.totalAmountWithInterest%></li>
+                        <li>Emi Duration (if select the emi payment mode): <%= data.emiDuration%>(Months) </li>
+                        <li>Due Dates (if applicable): <%= data.dueDates%></li>
+                      <% }); %>
+                    </ul>
+                  <% } else { %>
+                    <p>No form data found for this customer.</p>
+                    <% } %>
+            </div>
+        </div>
+    </body>
+    </html>

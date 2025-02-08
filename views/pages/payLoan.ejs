@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="./css/style.css" type="text/css" media="all">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+<%- include('../partials/header2') %>
+<div class="main">
+    <div class="customerData">
+        <h1>Pay Loan</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Customer ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Contact</th>
+                    <th>Loan Amount</th>
+                    <th>Loan Amount with Interest</th>
+                    <th>Payment Type</th>
+                    <th>EMI Duration</th>
+                    <th>Due Dates</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% tableData.forEach(function(rowData) { %>
+                    <tr>
+                        <td><%= rowData.customerId %></td>
+                        <td><%= rowData.name %></td>
+                        <td><%= rowData.email %></td>
+                        <td><%= rowData.contact %></td>
+                        <td><%= rowData.loanAmount %></td>
+                        <td><%= rowData.loanAmountWithInterest %></td>
+                        <td><%= rowData.paymentType %></td>
+                        <td><%= rowData.emiDuration %></td>
+                        <td><%= rowData.dueDates %></td>
+                        <td>
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#payLoanModal" 
+                                    data-customer-id="<%= rowData.customerId %>"
+                                    data-payment-type="<%= rowData.paymentType %>"
+                                    data-emi-duration="<%= rowData.emiDuration %>"
+                                    data-loan-amount-with-interest="<%= rowData.loanAmountWithInterest %>"
+                                    data-due-dates="<%= rowData.dueDates %>">Pay Loan</button>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="payLoanModal" tabindex="-1" role="dialog" aria-labelledby="payLoanModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header">
+                <h5 class="modal-title" id="payLoanModalLabel">Pay Loan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="payLoanForm">
+                    <div class="form-group">
+                        <label for="paymentType">Payment Type</label>
+                        <input type="text" class="form-control" id="paymentType" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="emiDuration">EMI Duration</label>
+                        <input type="text" class="form-control" id="emiDuration" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="loanAmountWithInterest">Loan Amount with Interest</label>
+                        <input type="text" class="form-control" id="loanAmountWithInterest" readonly>
+                    </div>
+                    <div id="emiDetails" class="form-group">
+                        <label for="dueDates">Due Dates</label>
+                        <input type="text" class="form-control" id="dueDates" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentAmount">Payment Amount</label>
+                        <input type="number" class="form-control" id="paymentAmount" name="paymentAmount" required>
+                    </div>
+                    <input type="hidden" id="customerId" name="customerId">
+                    <button type="button" class="btn btn-primary" onclick="submitPayment()">Submit Payment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include the full version of jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script>
+    $('#payLoanModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); 
+        var customerId = button.data('customer-id');
+        var paymentType = button.data('payment-type');
+        var emiDuration = button.data('emi-duration');
+        var loanAmountWithInterest = button.data('loan-amount-with-interest');
+        var dueDates = button.data('due-dates');
+
+        var modal = $(this);
+        modal.find('#customerId').val(customerId);
+        modal.find('#paymentType').val(paymentType);
+        modal.find('#emiDuration').val(emiDuration);
+        modal.find('#loanAmountWithInterest').val(loanAmountWithInterest);
+        modal.find('#dueDates').val(dueDates);
+    });
+
+    function submitPayment() {
+        console.log('clicked!!!');
+        var formData = $('#payLoanForm').serialize();
+        $.post('/processPayment', formData, function (data) {
+            alert('Payment successful');
+            $('#payLoanModal').modal('hide');
+            location.reload(); 
+        }).fail(function (error) {
+            alert('Payment failed: ' + error.responseText);
+        });
+    }
+</script>
+</body>
+</html>

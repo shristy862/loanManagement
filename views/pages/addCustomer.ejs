@@ -1,0 +1,27 @@
+
+<link rel="stylesheet" href="./css/style.css" type="text/css" media="all">
+<title>Add Customer</title>
+</head>
+<body>
+    <%- include('../partials/header2') %>
+    <div class="main">
+        <div class="form-container" style="background-color: black";>    
+            <form action="customerAdded" method="post">
+                <label for="name">Enter Name</label>
+                <input type="text" name="name" id="name"><br><br>
+               
+                <label for="contact">Enter contact no</label>
+                <input type="text" name="contact" id="contact"><br><br>
+    
+                <label for="email">Enter email </label>
+                <input type="text" name="email" id="email"><br><br>
+    
+                <label for="city">Enter city </label>
+                <input type="text" name="city" id="city"><br><br>
+                <input type="submit" value="Add Customer">
+            </form>
+        </div>
+        
+    </div>
+</body>
+</html>
